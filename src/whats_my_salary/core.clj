@@ -6,14 +6,6 @@
 ;;; Define your standard allowances
 ;;; values taken from http://www.hmrc.gov.uk/rates/it.htm
 ;;; and http://www.hmrc.gov.uk/rates/nic.htm
-
-;;; experimental code
-
-(defn earns-within-basic-tax-rate [monies]
-  (- (* monies (/ tax-rate-basic-percent 100.0))) monies )
-
-;;; End of experimental code
-
 (def weeks-in-a-year 52)
 
 (def personal-earnings-allowance 8105.0)
@@ -30,6 +22,15 @@
 (def national-insurance-percentage 12.0)
    ; Use decimal number to prevent lazy evaluation on all percentage
    ; figures due to the way we calculate percentage
+
+
+;;; experimental code
+
+(defn earns-within-basic-tax-rate [monies]
+  (- (* monies (/ tax-rate-basic-percent 100.0))) monies )
+
+;;; End of experimental code
+
 
 (defn national-insurance-rate-employed-minimum [monies]
   (* national-insurance-employed-minimum-weekly-salary weeks-in-a-year))
