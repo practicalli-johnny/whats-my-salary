@@ -51,9 +51,11 @@
 
 (defn whats-my-tax-bands [gross-salary]
   "Which taxation bands do I incur due to salary.  If below the personal tax allowance, then only NI.  If below 37k then only 20%.  If more then everything over 38k earnt taxed at 40%"
-  (if (> gross-salary tax-rate-basic-level-max )
-    (println "You are a fat "))
+  (if (> gross-salary (income-bands :top) )
+    (str "You are a fat cat"))
   )
+
+(whats-my-tax-bands 200000)
 
 ;; Refactor to combine similar functions,
 ;; either using paramter overloading or let statements
