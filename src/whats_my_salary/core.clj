@@ -7,31 +7,44 @@
 ;;; values taken from http://www.hmrc.gov.uk/rates/it.htm
 ;;; and http://www.hmrc.gov.uk/rates/nic.htm
 
-;; Should refactor data into few small maps by related context
-;; Eventually create a one map to manage all the data
+;;; Decimal numbers have been used to prevent lazy evaluation on all percentage
+;;; figures due to the way we calculate percentage.
 
-(def weeks-in-a-year 52)
-
-(def personal-earnings-allowance 8105.0)
-
-(def personal-allowance-income-limit 100000)
-
-(def tax-rate-basic-level-max 34370)
-(def tax-rate-basic-percent 20.0)
-(def tax-rate-higher-level-max 150000)
-(def tax-rate-higher-percent 40.0)
-
-(def national-insurance-employed-minimum-weekly-salary 142.0)
-(def national-insurance-employed-maximum-weekly-salary 817.0)
-(def national-insurance-percentage 12.0)
-   ; Use decimal number to prevent lazy evaluation on all percentage
-   ; figures due to the way we calculate percentage
+;; Starting to refactor data into a few small maps, by joining related data together
+;; Aiming toward a single, well constructed data structure to manage all data.
 
 
-;;; experimental code
+(def working-times
+  "Average working times for a full-time employee,
+   useful to compare earnings to that of a contractor"
+  {:weeks-in-a-year 47 :days-in-a-week 5 :hours-in-a-day 8})
 
-(defn earns-within-basic-tax-rate [monies]
-  (- (* monies (/ tax-rate-basic-percent 100.0))) monies )
+; Example of accessing a value of a maps key/value pair
+(get working-times :weeks-in-a-year)
+(working-times :days-in-a-week)
+(:hours-in-a-day working-times)
+
+
+(def income-bands
+  "The income levels used to calcuate tax at different rates"
+  {:basic   8105.0
+   :high   34370.0
+   :top   150000.0
+   :income-limit 100000} )
+
+(def tax-rate-percent
+  "The percentage rate used to calculate tax for difference tax bands"
+  {:basic 20.0
+   :high 40.0
+   :top 45.0} )
+
+(def national-insurance {:minimum-weekly-salary 142.0
+                         :maximum-weekly-salary 817.0
+                         :percentage 12.0})
+
+
+(defn earnings-within-basic-tax-rate [monies]
+  (- (* monies (/ (tax-rate-percent :basic) 100.0))) monies )
 
 ;;; End of experimental code
 
@@ -60,7 +73,7 @@
 
 
 (defn income-tax-due [monies]
-  (* (taxable-salary monies) (/ tax-rate-basic-percent 100)))
+  (* (taxable-salary monies) (/ :basic 100)))
 
 
 (defn whats-my-yearly-takehome [salary]
