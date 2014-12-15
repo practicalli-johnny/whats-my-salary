@@ -46,9 +46,13 @@
                          :percentage 12.0})
 
 
-(defn earnings-within-basic-tax-rate [monies]
-  (- (* monies (/ (tax-rate-percent :basic) 100.0))) monies )
+(defn earnings-after-basic-tax-rate [monies]
+  (- monies (* monies (/ (tax-rate-percent :basic) 100.0))) )
 
+(/ (tax-rate-percent :basic) 100.0)
+(* 20000 (/ (tax-rate-percent :basic) 100.0))
+(- 20000 (* 20000 (/ (tax-rate-percent :basic) 100.0)) )
+(earnings-after-basic-tax-rate 20000)
 ;;; End of experimental code
 
 
