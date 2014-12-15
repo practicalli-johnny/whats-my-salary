@@ -1,17 +1,20 @@
 (ns whats-my-salary.core)
 
-;;; A calculator to show how much money you will take home given a
-;;; specified
+;;; A calculator to show how much money you will take home when employed as a
+;;; perminant employee
 
-;;; Define your standard allowances
-;;; values taken from http://www.hmrc.gov.uk/rates/it.htm
+;;; Standard tax, NI and allowance rates taken from
+;;; http://www.hmrc.gov.uk/rates/it.htm
 ;;; and http://www.hmrc.gov.uk/rates/nic.htm
-
+;;;
 ;;; Decimal numbers have been used to prevent lazy evaluation on all percentage
 ;;; figures due to the way we calculate percentage.
-
+;;;
 ;; Starting to refactor data into a few small maps, by joining related data together
 ;; Aiming toward a single, well constructed data structure to manage all data.
+
+;; Another refactoring would be to put functions into some of the data structures
+;; for any common calulations that would otherwise be put into more than one function
 
 
 (def working-times
