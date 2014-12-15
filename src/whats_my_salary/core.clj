@@ -75,7 +75,7 @@
 
 
 (defn taxable-salary [my-salary]
-  (- my-salary personal-earnings-allowance))
+  (- my-salary (tax-rate-percent :basic)))
 
 (defn national-insurance-due [monies]
   (* (taxable-salary monies) (/ national-insurance-percentage 100)))
