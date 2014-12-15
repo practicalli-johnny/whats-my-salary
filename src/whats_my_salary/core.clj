@@ -30,7 +30,7 @@
 
 (def income-bands
   "The income levels used to calcuate tax at different rates"
-  {:basic   8105.0
+  {:basic   1000.0
    :high   34370.0
    :top   150000.0
    :income-limit 100000} )
