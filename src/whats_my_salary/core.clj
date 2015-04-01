@@ -35,7 +35,7 @@
    :top   150000.0
    :income-limit 100000} )
 
-(def tax-rate-percent
+(def tax-rate-bands
   "The percentage rate used to calculate tax for difference tax bands"
   {:basic 20.0
    :high 40.0
@@ -43,21 +43,35 @@
 
 (def national-insurance {:minimum-weekly-salary 142.0
                          :maximum-weekly-salary 817.0
-                         :percentage 12.0})
+                         :percentage 0.12})
 
+(def personal-pension-allowance "?")
 
+(def charity-contributions "?")
+
+;; How much you can take off your liability for pension, charity, etc
+;; Each value is the percentate of the particular monies you can
+;; write off against tax
+(def tax-write-off {:pension 60
+                 :charity 100})
+
+;; Instead of dividing by 100 for the percentate in several places, we could make the tax-rate-bands :basic be a percentage figure, eg. 0.20 rather than 20
 (defn earnings-after-basic-tax-rate [monies]
-  (- monies (* monies (/ (tax-rate-percent :basic) 100.0))) )
+  (- monies (* monies (/ (tax-rate-bands :basic) 100.0))) )
 
-(/ (tax-rate-percent :basic) 100.0)
-(* 20000 (/ (tax-rate-percent :basic) 100.0))
-(- 20000 (* 20000 (/ (tax-rate-percent :basic) 100.0)) )
+(/ (tax-rate-bands :basic) 100.0)
+(* 20000 (/ (tax-rate-bands :basic) 100.0))
+(- 20000 (* 20000 (/ (tax-rate-bands :basic) 100.0)) )
 (earnings-after-basic-tax-rate 20000)
 ;;; End of experimental code
 
 
-(defn whats-my-tax-bands [gross-salary]
-  "Which taxation bands do I incur due to salary.  If below the personal tax allowance, then only NI.  If below 37k then only 20%.  If more then everything over 38k earnt taxed at 40%"
+(defn whats-my-tax-bands
+  "Which taxation bands do I incur due to salary.
+  * Earnings below the personal tax allowance, 10,000, is only charged National Insurance.
+  * Earnings between 10,000 and below 33,000 is charged at the basic rate of 20%.
+  * Earnings over 33,000 are charged at Higher rate of 40%"
+  [gross-salary]
   (if (> gross-salary (income-bands :top) )
     (str "You are a fat cat"))
   )
@@ -67,7 +81,9 @@
 ;; Refactor to combine similar functions,
 ;; either using paramter overloading or let statements
 
-(defn national-insurance-rate-employed-minimum [monies]
+(defn national-insurance-rate-employed-minimum
+  "Calculate the National Insurance due for the year"
+  [monies]
   (* national-insurance-employed-minimum-weekly-salary weeks-in-a-year))
 
 (defn national-insurance-rate-employed-maximum [monies]
@@ -75,11 +91,12 @@
 
 
 (defn taxable-salary [my-salary]
-  (- my-salary (tax-rate-percent :basic)))
+  (- my-salary (tax-rate-bands :basic)))
 
 (defn national-insurance-due [monies]
-  (* (taxable-salary monies) (/ national-insurance-percentage 100)))
+  (* (taxable-salary monies) (national-insurance :percentage)))
 
+(national-insurance-due 10000)
 
 (defn income-tax-due [monies]
   (* (taxable-salary monies) (/ :basic 100)))
@@ -107,3 +124,5 @@
   (println "Hello, World!")
   (whats-my-yearly-takehome 28000)
   )
+
+
